@@ -1,0 +1,31 @@
+{% extends "app/layout.html" %}
+
+
+{% block content %}
+<div class=" text-center row d-flex justify-content-center">
+<br>
+    <div class="card w-50 mt-5">
+        <div class="card-header info-color white-text text-center py-4">
+                  <p class="h1 mt-3">Регистрация</p>
+             </div>
+          <div class="card-body">
+    <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% for error in field.errors %}
+        <div class="alert alert-danger" role="alert"> 
+          <p>{{ error }}</p>
+       </div>
+        {% endfor %}
+      </p>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+  </form>
+          </div>
+            </div>
+        </div>
+{% endblock %}
