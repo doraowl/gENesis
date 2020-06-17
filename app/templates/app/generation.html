@@ -16,19 +16,19 @@
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-   
+
             </div>
               <ul class="list-unstyled CTAs">
                 <li>
                     <a href="{% url 'textLoad' %}" class="download">Добавить текст</a>
                 </li>
+
             </ul>
-                          <ul id='gen' class="list-unstyled CTAs">
+                          <ul class="list-unstyled CTAs">
                 <li>
                     <a href="{% url 'generation' %}" class="download">Сгенерировать тест</a>
                 </li>
 
-            </ul>
             </ul>
             <ul class="list-unstyled components">
                 <li class="active">
@@ -66,18 +66,34 @@
 
         <!-- Page Content  -->
         <div  id="content">
-        <h2 id='load' align='center'> Добавить текст </h2>
+         <h3 id='myheader' align='center'> Сгенерировать тест </h2>
     <div id='txtinput' >
     <form action="" method="post">
     {% csrf_token %}
-    <div> Введите название: {{form.name}}</div>
+    <div> Выберите текст:
+     
+       {{form.text}}</div>
     <br>
-    <div> Введите текст: {{ form.text }}</div>
+    <div> Укажите желаемое количество заданий на каждую тему:</div>
+    <div class="" style="width:30%">
+    {% for key, value in themes.items %}
+    <div class="row" style="margin-top:1vh"> 
+    <div class="col-md-8">
+     {{value}}
+    </div>
+     <div class="col-md-4">
+     {{ form.theme }}
+    </div>
+     </div>
+       {% endfor %}
+    </div>
     <br>
-    <input type="submit" class="btn btn-default"  value="Загрузить">
+    <input type="submit" class="btn btn-default"  value="Скорее сгенерируй мне мой тест!">
 </form>
 </div>
-          
+    
+
+         
 
 
         </div>

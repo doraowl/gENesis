@@ -18,9 +18,15 @@
             <div class="sidebar-header">
 
             </div>
-              <ul class="list-unstyled CTAs">
+              <ul id='add' class="list-unstyled CTAs">
                 <li>
                     <a href="{% url 'textLoad' %}" class="download">Добавить текст</a>
+                </li>
+
+            </ul>
+                          <ul id='gen' class="list-unstyled CTAs">
+                <li>
+                    <a href="{% url 'generation' %}" class="download">Сгенерировать тест</a>
                 </li>
 
             </ul>

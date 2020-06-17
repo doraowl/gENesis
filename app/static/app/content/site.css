@@ -40,10 +40,19 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
-#textname{
-    font-size:25px;
+#myheader{
+    font-size:20px;
     font-family: 'Poppins', sans-serif;
 }
+#load{
+    font-size:20px;
+    font-family: 'Poppins', sans-serif;
+}
+#textname{
+    font-size:20px;
+    font-family: 'Poppins', sans-serif;
+}
+
 #testname{
     font-size:20px;
     font-family: 'Poppins', sans-serif;

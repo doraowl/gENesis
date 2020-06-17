@@ -27,6 +27,44 @@ def home(request):
         return render(request, 'app/hello.html')
 
 
+def generation(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = app.forms.TextInputForm(request.POST)
+
+            if form.is_valid():
+                text = form.cleaned_data['text']
+                theme = form.cleaned_data['theme']
+
+                tst = app.models.Test()
+                # tst.name = название текста, кот надо сюда передавать, а не айди + название темы + мб число сегодняшнее
+                task = app.models.Task()
+                # task.test= а вот тут уже айди теста нужно, или даже сам объект
+                # task.theme= то же самое
+                # task.sentence
+                #
+                # tst.save()
+                # task.save
+                return redirect('generation')
+        else:
+            form = app.forms.TestGenForm()
+            themes = app.models.Theme.objects.all()
+            texts = app.models.Text.objects.filter(user=request.user)
+            texts_dict = {}
+            tests_dict = {}
+            themes_dict = {}
+            for t in themes:
+                themes_dict[t.id] = t.name
+            for text in texts:
+                texts_dict[text.id] = text.name
+                for test in text.test_set.all():
+                    tests_dict[test.id] = test.name
+            form.fields['text'].choices = [(h.name, h.name) for h in texts]
+            return render(request, 'app/generation.html', {'texts': texts_dict, 'tests': tests_dict, 'form': form, 'themes': themes_dict})
+    else:
+        return render(request, 'app/hello.html')
+
+
 def textLoad(request):
     if request.method == 'POST':
         form = app.forms.TextInputForm(request.POST)

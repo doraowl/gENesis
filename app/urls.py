@@ -9,6 +9,7 @@ urlpatterns = [
     path("", app.views.home, name="home"),
     path("textShow/<int:id>/", app.views.textShow, name='textShow'),
     path("testShow/<int:id>/", app.views.testShow, name='testShow'),
+    path("generation/", app.views.generation, name='generation'),
     path("textLoad/", app.views.textLoad, name='textLoad'),
     path('getText/<int:id>/', app.views.getText),
     path("logout/", LogoutView.as_view(), name='logout'),

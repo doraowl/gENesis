@@ -20,3 +20,9 @@ class TextInputForm(forms.Form):
         attrs={'id': 'mynamefield'}))
     text = forms.CharField(widget=forms.Textarea(
         attrs={'id': 'mytextfield'}))
+
+
+class TestGenForm(forms.Form):
+    text = forms.ChoiceField()
+    theme = forms.CharField(widget=forms.TextInput(
+        attrs={'type': 'number', 'style': '  min-width: 100%;max-width: 100% ;'}))
