@@ -11,6 +11,7 @@ urlpatterns = [
     path("testShow/<int:id>/", app.views.testShow, name='testShow'),
     path("generation/", app.views.generation, name='generation'),
     path("textLoad/", app.views.textLoad, name='textLoad'),
+    path("testSave/", app.views.testSave, name='testSave'),
     path('getText/<int:id>/', app.views.getText),
     path("logout/", LogoutView.as_view(), name='logout'),
     path("register/", app.views.register, name='register'),

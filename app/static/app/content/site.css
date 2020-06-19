@@ -44,6 +44,12 @@ input[type="checkbox"].input-validation-error {
     font-size:20px;
     font-family: 'Poppins', sans-serif;
 }
+.textinput{
+    width: 100%;
+}
+.answer{
+    width: 80px
+}
 #load{
     font-size:20px;
     font-family: 'Poppins', sans-serif;

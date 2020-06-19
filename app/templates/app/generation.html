@@ -66,7 +66,7 @@
 
         <!-- Page Content  -->
         <div  id="content">
-         <h3 id='myheader' align='center'> Сгенерировать тест </h2>
+         <h2 id='myheader' align='center'> Сгенерировать тест </h2>
     <div id='txtinput' >
     <form action="" method="post">
     {% csrf_token %}
@@ -74,27 +74,67 @@
      
        {{form.text}}</div>
     <br>
-    <div> Укажите желаемое количество заданий на каждую тему:</div>
-    <div class="" style="width:30%">
-    {% for key, value in themes.items %}
+  <div> Укажите желаемое количество заданий на каждую тему:</div>
+ 
+<div class="" style="width:30%">
+   
     <div class="row" style="margin-top:1vh"> 
     <div class="col-md-8">
-     {{value}}
+{{form.prepositions.label_tag}} 
     </div>
      <div class="col-md-4">
-     {{ form.theme }}
+    {{ form.prepositions }}
     </div>
      </div>
-       {% endfor %}
+         <div class="row" style="margin-top:1vh"> 
+    <div class="col-md-8">
+{{form.tenses.label_tag}}
+    </div>
+     <div class="col-md-4">
+   {{ form.tenses }}
+    </div>
+     </div>
+
     </div>
     <br>
     <input type="submit" class="btn btn-default"  value="Скорее сгенерируй мне мой тест!">
 </form>
 </div>
-    
+<br>
 
-         
 
+<form action="{% url "testSave" %}"  method="post">
+  {% csrf_token %}
+
+
+
+<input type="hidden" name='txt' value={{txtid}}>
+<input type="hidden" name='theme' value={{thmid}}>
+
+  {%for key,value in output.items%} 
+  <textarea class='textinput' name='sentence{{value.num}}'  >{{value.sent}}</textarea>
+ <br>
+
+
+  {%for v in value.options%} 
+
+{%if v.1%}
+ <input type="checkbox" name='check{{value.num}}{{v.2}}' value={{v.2}} checked > 
+
+ <input class='answer' name='answer{{value.num}}{{v.2}}' type='text' value={{v.0}} ><br>
+
+ {%else%} 
+  <input type="checkbox" name='check{{value.num}}{{v.2}}' value={{v.2}}> 
+
+ <input class='answer' name='answer{{value.num}}{{v.2}}' type='text' value={{v.0}}  ><br>
+ {%endif%}
+  {%endfor%}
+  <hr>
+{%endfor%}
+{%if  output is not None%}
+  <input type="submit" class="btn btn-default"  value="Сохранить">  
+   {%endif%}     
+</form>
 
         </div>
     </div>

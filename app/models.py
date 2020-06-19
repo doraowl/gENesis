@@ -9,6 +9,17 @@ class Text(models.Model):
                              on_delete=models.CASCADE, default=None)
 
 
+class Token(models.Model):
+    in_text = models.TextField(default='')
+    lemma = models.TextField(default='')
+    pos = models.TextField(default='')
+    text = models.ForeignKey('Text',
+                             on_delete=models.CASCADE, default=None)
+    position = models.IntegerField(default=-1)
+    sentence = models.IntegerField(default=-1)
+    tag = models.TextField(default='')
+
+
 class Test(models.Model):
     name = models.TextField(default='')
     text = models.ForeignKey('Text',
