@@ -37,10 +37,10 @@ def testSave(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
             textid = request.POST['txt']
-            themeid = request.POST['theme']
+
             test = app.models.Test()
             txt = app.models.Text.objects.get(id=textid)
-            thm = app.models.Theme.objects.get(id=themeid)
+
             test.text = txt
             test.name = txt.name+' '+str(datetime.date.today())
             test.save()
@@ -50,7 +50,8 @@ def testSave(request):
                 if 'sentence'+str(i) in request.POST:
                     task = app.models.Task()
                     task.test = test
-                    task.theme = thm
+                    themeid = request.POST['theme'+str(i)]
+                    task.theme = app.models.Theme.objects.get(id=themeid)
                     task.sentence = request.POST['sentence'+str(i)]
                     task.save()
                     for j in range(4):
@@ -65,6 +66,96 @@ def testSave(request):
             return redirect('testShow', id=test.id)
 
 
+def prepositions(sentences, n, num, text):
+    thm = app.models.Theme.objects.get(name='Prepositions')
+    tasks = {}
+
+    for sent in sentences:
+        allwords = app.models.Token.objects.filter(
+            text=text, sentence=sent)
+        adps = allwords.filter(
+            pos='ADP', tag="IN")
+
+        for prep in adps:
+            if n < num and prep.sentence in sentences:
+                task = {}
+                task['num'] = n
+                task['theme'] = thm.id
+                task['sent'] = []
+                for w in allwords:
+                    if w.in_text == prep.in_text:
+                        task['sent'].append('___')
+                    else:
+                        task['sent'].append(w.in_text)
+                task['sent'] = " ".join(task['sent'])
+                n += 1
+                task['options'] = []
+                i = 0
+                task['options'].append([prep.in_text.lower(), True])
+                answers = []
+                answers.append(prep.in_text.lower())
+                while i < 3:
+                    rand = random.choice(test_preps)
+                    if rand not in answers:
+                        task['options'].append([rand, False])
+                        i += 1
+                        answers.append(rand)
+                random.shuffle(task['options'])
+                for i in range(4):
+                    task['options'][i].append(i)
+                tasks[prep.position] = task
+                sentences.remove(prep.sentence)
+
+    return(sentences, tasks, n)
+
+
+def tenses(sentences, n, num, text):
+    pass
+
+
+'''
+    thm = app.models.Theme.objects.get(name='Prepositions')
+    tasks = {}
+
+    for sent in sentences:
+        allwords = app.models.Token.objects.filter(
+            text=text, sentence=sent)
+        adps = allwords.filter(
+            pos='ADP', tag="IN")
+
+        for prep in adps:
+            if n < num and prep.sentence in sentences:
+                task = {}
+                task['num'] = n
+                task['theme'] = thm.id
+                task['sent'] = []
+                for w in allwords:
+                    if w.in_text == prep.in_text:
+                        task['sent'].append('___')
+                    else:
+                        task['sent'].append(w.in_text)
+                task['sent'] = " ".join(task['sent'])
+                n += 1
+                task['options'] = []
+                i = 0
+                task['options'].append([prep.in_text.lower(), True])
+                answers = []
+                answers.append(prep.in_text.lower())
+                while i < 3:
+                    rand = random.choice(test_preps)
+                    if rand not in answers:
+                        task['options'].append([rand, False])
+                        i += 1
+                        answers.append(rand)
+                random.shuffle(task['options'])
+                for i in range(4):
+                    task['options'][i].append(i)
+                tasks[prep.position] = task
+                sentences.remove(prep.sentence)
+
+    return(sentences, tasks, n)'''
+
+
 def generation(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -74,50 +165,25 @@ def generation(request):
                 (h.id, h.name) for h in app.models.Text.objects.filter(user=request.user)]
             if form.is_valid():
                 text = form.cleaned_data['text']
-                prepositions = int(form.cleaned_data['prepositions'])
-                tenses = form.cleaned_data['tenses']
-
-                txt = app.models.Text.objects.get(id=text)
+                prepositions_num = int(form.cleaned_data['prepositions'])
+                tenses_num = int(form.cleaned_data['tenses'])
                 thm = app.models.Theme.objects.get(name='Prepositions')
-                adps = app.models.Token.objects.filter(text=txt, pos='ADP')
+                txt = app.models.Text.objects.get(id=text)
 
-                s = 0
-                num = 0
-                for t in adps:
-                    # and app.models.Token.objects.get(text=txt, position=t.position-1).pos != 'VERB':
-                    if num < prepositions and t.sentence > s and t.tag == 'IN':
-                        toks = {}
+                tokens = app.models.Token.objects.filter(text=txt)
+                sent_count = tokens.order_by('-sentence').first().sentence
 
-                        toks['sent'] = []
-                        toks['num'] = num
-                        allwords = app.models.Token.objects.filter(
-                            text=txt, sentence=t.sentence)
-                        for w in allwords:
-                            if w.in_text == t.in_text:
-                                toks['sent'].append('___')
-                            else:
-                                toks['sent'].append(w.in_text)
-                        toks['sent'] = " ".join(toks['sent'])
-                        s = t.sentence
-                        num += 1
-                        toks['options'] = []
-                        i = 0
-                        toks['options'].append([t.in_text, True])
+                sent_list = []
 
-                        answers = []
-                        answers.append(t.in_text)
-                        while i < 3:
-                            rand = random.choice(test_preps)
-                            if rand not in answers:
-                                toks['options'].append([rand, False])
-                                i += 1
-                                answers.append(rand)
-                        random.shuffle(toks['options'])
-                        for i in range(4):
-                            toks['options'][i].append(i)
-                        tks[t.position] = toks
+                for i in range(1, sent_count+1):
+                    sent_list.append(i)
+                random.shuffle(sent_list)
+                n = 0
+                sent_list, tasks, n = prepositions(
+                    sent_list, n, prepositions_num+n, text)
+                sent_list, tasks_t, n = prepositions(
+                    sent_list, n, tenses_num+n, text)
 
-            # return redirect('generation')
             themes = app.models.Theme.objects.all()
             texts = app.models.Text.objects.filter(user=request.user)
             texts_dict = {}
@@ -132,7 +198,7 @@ def generation(request):
                 for test in text.test_set.all():
                     tests_dict[test.id] = test.name
             form.fields['text'].choices = [(h.id, h.name) for h in texts]
-            return render(request, 'app/generation.html', {'texts': texts_dict, 'tests': tests_dict, 'form': form, 'themes': themes_dict, 'output': tks, 'txtid': txt.id, 'thmid': thm.id})
+            return render(request, 'app/generation.html', {'texts': texts_dict, 'tests': tests_dict, 'form': form, 'themes': themes_dict, 'output': tasks, 'txtid': txt.id, 'thmid': thm.id})
 
     else:
         form = app.forms.TestGenForm()
@@ -151,8 +217,6 @@ def generation(request):
                 tests_dict[test.id] = test.name
         form.fields['text'].choices = [(h.id, h.name) for h in texts]
         return render(request, 'app/generation.html', {'texts': texts_dict, 'tests': tests_dict, 'form': form, 'themes': themes_dict})
-   # else:
-    #    return render(request, 'app/hello.html')
 
 
 def textLoad(request):

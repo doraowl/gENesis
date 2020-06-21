@@ -109,10 +109,11 @@
 
 
 <input type="hidden" name='txt' value={{txtid}}>
-<input type="hidden" name='theme' value={{thmid}}>
+
 
   {%for key,value in output.items%} 
   <textarea class='textinput' name='sentence{{value.num}}'  >{{value.sent}}</textarea>
+  <input type="hidden" name='theme{{value.num}}' value={{value.theme}}>
  <br>
 
 
