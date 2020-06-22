@@ -11,9 +11,10 @@ import json
 import spacy
 import datetime
 import random
+import pattern
+from pattern.en import lexeme
 
 nlp = spacy.load("en_core_web_sm")
-test_preps = ['at', 'in', 'on', 'for', 'by', 'to', 'of']
 
 
 def home(request):
@@ -67,6 +68,7 @@ def testSave(request):
 
 
 def prepositions(sentences, n, num, text):
+    test_preps = ['at', 'in', 'on', 'for', 'by', 'to', 'of']
     thm = app.models.Theme.objects.get(name='Prepositions')
     tasks = {}
 
@@ -110,27 +112,23 @@ def prepositions(sentences, n, num, text):
 
 
 def tenses(sentences, n, num, text):
-    pass
-
-
-'''
-    thm = app.models.Theme.objects.get(name='Prepositions')
+    thm = app.models.Theme.objects.get(name='Tenses')
     tasks = {}
 
     for sent in sentences:
         allwords = app.models.Token.objects.filter(
             text=text, sentence=sent)
-        adps = allwords.filter(
-            pos='ADP', tag="IN")
+        verbs = allwords.filter(
+            pos='VERB')
 
-        for prep in adps:
-            if n < num and prep.sentence in sentences:
+        for verb in verbs:
+            if n < num and verb.sentence in sentences:
                 task = {}
                 task['num'] = n
                 task['theme'] = thm.id
                 task['sent'] = []
                 for w in allwords:
-                    if w.in_text == prep.in_text:
+                    if w.in_text == verb.in_text:
                         task['sent'].append('___')
                     else:
                         task['sent'].append(w.in_text)
@@ -138,22 +136,26 @@ def tenses(sentences, n, num, text):
                 n += 1
                 task['options'] = []
                 i = 0
-                task['options'].append([prep.in_text.lower(), True])
+                verb_text_low = verb.in_text.lower()
+                task['options'].append([verb_text_low, True])
                 answers = []
-                answers.append(prep.in_text.lower())
+                answers.append(verb_text_low)
+
                 while i < 3:
-                    rand = random.choice(test_preps)
+                    v_forms = lexeme(verb_text_low)
+                    rand = random.choice(v_forms)
                     if rand not in answers:
                         task['options'].append([rand, False])
                         i += 1
                         answers.append(rand)
+
                 random.shuffle(task['options'])
                 for i in range(4):
                     task['options'][i].append(i)
-                tasks[prep.position] = task
-                sentences.remove(prep.sentence)
+                tasks[verb.position] = task
+                sentences.remove(verb.sentence)
 
-    return(sentences, tasks, n)'''
+    return(sentences, tasks, n)
 
 
 def generation(request):
@@ -181,8 +183,9 @@ def generation(request):
                 n = 0
                 sent_list, tasks, n = prepositions(
                     sent_list, n, prepositions_num+n, text)
-                sent_list, tasks_t, n = prepositions(
+                sent_list, tasks_t, n = tenses(
                     sent_list, n, tenses_num+n, text)
+                tasks.update(tasks_t)
 
             themes = app.models.Theme.objects.all()
             texts = app.models.Text.objects.filter(user=request.user)
@@ -198,7 +201,7 @@ def generation(request):
                 for test in text.test_set.all():
                     tests_dict[test.id] = test.name
             form.fields['text'].choices = [(h.id, h.name) for h in texts]
-            return render(request, 'app/generation.html', {'texts': texts_dict, 'tests': tests_dict, 'form': form, 'themes': themes_dict, 'output': tasks, 'txtid': txt.id, 'thmid': thm.id})
+            return render(request, 'app/generation.html', {'texts': texts_dict, 'tests': tests_dict, 'form': form, 'themes': themes_dict, 'output': tasks, 'txtid': txt.id})
 
     else:
         form = app.forms.TestGenForm()

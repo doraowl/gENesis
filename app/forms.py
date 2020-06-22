@@ -29,7 +29,7 @@ class TestGenForm(forms.Form):
     #   attrs={'type': 'number', 'value': 0, 'style': '  min-width: 100%;max-width: 100% ;'}))
     prepositions = forms.CharField(label='prepositions', widget=forms.TextInput(
         attrs={'type': 'number', 'value': 0, 'style': '  min-width: 100%;max-width: 100% ;'}))
-    tenses = forms.CharField(label='verb tenses', widget=forms.TextInput(attrs={
+    tenses = forms.CharField(label='verb forms', widget=forms.TextInput(attrs={
                              'type': 'number', 'value': 0, 'style': '  min-width: 100%;max-width: 100% ;'}))
 
   #  def __init__(self, user, *args, **kwargs):

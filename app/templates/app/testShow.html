@@ -74,15 +74,15 @@
                          <br>
                          {{value.sentence}}
                          <br>  </div>
-                         {% for key, value in value.options.items %}
-                         {% if value.corr %}
-                                                          <b id='{{key}}' > {{value.question}} 
+                         {% for k, v in value.options.items %}
+                         {% if v.corr %}
+                                                          <b id='{{k}}' > 
               
-                       -   {{value.answer}} </b>
+                       -   {{v.answer}} </b>
                        {% else %}
-                                                     <div id='{{key}}' > {{value.question}} 
+                                                     <div id='{{k}}' > 
               
-                       -   {{value.answer}} </div>
+                       -   {{v.answer}} </div>
                          {% endif%}
                                  
     
