@@ -67,6 +67,11 @@
 
         <!-- Page Content  -->
         <div  id="content">
+        
+  <form action="{% url "testDelete" id %}" method="post">
+      {% csrf_token %}
+          <input type="submit" class="btn btn-danger" align='right' value="Удалить тест">
+
         <h3 id='testname' align=center>{{name}}</h3>
                                   {% for key, value in tasks.items %}
 
@@ -91,7 +96,7 @@
   
 
                         {% endfor %}  
-
+</form>
 
         </div>
     </div>

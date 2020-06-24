@@ -278,6 +278,16 @@ def getText(request, id):
     )
 
 
+def testDelete(request, id):
+    app.models.Test.objects.filter(id=id).delete()
+    return(redirect('home'))
+
+
+def textDelete(request, id):
+    app.models.Text.objects.filter(id=id).delete()
+    return(redirect('home'))
+
+
 def textShow(request, id):
     if request.user.is_authenticated:
         txt = app.models.Text.objects.get(id=id)
@@ -288,7 +298,7 @@ def textShow(request, id):
             texts_dict[text.id] = text.name
             for test in text.test_set.all():
                 tests_dict[test.id] = test.name
-        return render(request, 'app/textShow.html', {'name': txt.name, 'text': txt.text, 'texts': texts_dict, 'tests': tests_dict})
+        return render(request, 'app/textShow.html', {'name': txt.name, 'text': txt.text, 'id': txt.id, 'texts': texts_dict, 'tests': tests_dict})
     else:
         return render(request, 'app/hello.html')
 
@@ -319,7 +329,7 @@ def testShow(request, id):
             texts_dict[text.id] = text.name
             for test in text.test_set.all():
                 tests_dict[test.id] = test.name
-        return render(request, 'app/testShow.html', {'tasks': tst_dict, 'texts': texts_dict, 'tests': tests_dict, 'name': t_name})
+        return render(request, 'app/testShow.html', {'tasks': tst_dict, 'id': tst.id, 'texts': texts_dict, 'tests': tests_dict, 'name': t_name})
     else:
         return render(request, 'app/hello.html')
 

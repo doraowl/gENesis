@@ -8,7 +8,9 @@ from datetime import datetime
 urlpatterns = [
     path("", app.views.home, name="home"),
     path("textShow/<int:id>/", app.views.textShow, name='textShow'),
+    path("textDelete/<int:id>/", app.views.textDelete, name='textDelete'),
     path("testShow/<int:id>/", app.views.testShow, name='testShow'),
+    path("testDelete/<int:id>/", app.views.testDelete, name='testDelete'),
     path("generation/", app.views.generation, name='generation'),
     path("textLoad/", app.views.textLoad, name='textLoad'),
     path("testSave/", app.views.testSave, name='testSave'),

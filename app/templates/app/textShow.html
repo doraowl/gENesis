@@ -67,11 +67,17 @@
 
         <!-- Page Content  -->
         <div  id="content">
-   
-        <h3 id='textname' align='center'>{{name}}</h3>
+  
+  <form action="{% url "textDelete" id %}" method="post">
+      {% csrf_token %}
+          <input type="submit" class="btn btn-danger" align='right' value="Удалить текст">
+        <h3 id='textname' name='textname' align='center'>{{name}}</h3>
+       
         <br>
-       <div id='txt' align='justify'> {{text}} </div>
-
+       <div id='txt' name='text' align='justify'> {{text}} </div>
+   
+         
+</form>
         </div>
     </div>
 
